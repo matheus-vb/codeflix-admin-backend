@@ -15,8 +15,30 @@ public class CategoryValidator extends Validator {
 
     @Override
     public void validate() {
-        if (this.category.getaName() == null) {
+        checkNameConstraints();
+    }
+
+    private void checkNameConstraints() {
+        final var name = this.category.getaName();
+
+        if (name == null) {
             this.validationHandler().append(new Error("'name' can not be null"));
+            return;
+        }
+
+        if (name.isBlank()) {
+            this.validationHandler().append(new Error("'name' can not be empty"));
+            return;
+        }
+
+        final int length = name.trim().length();
+        if (length > 255) {
+            this.validationHandler().append(new Error("'name' must have between 3 and 255 characters"));
+            return;
+        }
+
+        if (length < 3) {
+            this.validationHandler().append(new Error("'name' must have between 3 and 255 characters"));
         }
     }
 }
