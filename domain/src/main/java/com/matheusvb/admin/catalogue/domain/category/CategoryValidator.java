@@ -6,6 +6,8 @@ import com.matheusvb.admin.catalogue.domain.validation.Validator;
 
 public class CategoryValidator extends Validator {
 
+    public static final int MAX_NAME_LENGTH = 255;
+    public static final int MIN_NAME_LENGTH = 3;
     private final Category category;
 
     public CategoryValidator(final Category category, final ValidationHandler handler) {
@@ -19,7 +21,7 @@ public class CategoryValidator extends Validator {
     }
 
     private void checkNameConstraints() {
-        final var name = this.category.getaName();
+        final var name = this.category.getName();
 
         if (name == null) {
             this.validationHandler().append(new Error("'name' can not be null"));
@@ -32,12 +34,12 @@ public class CategoryValidator extends Validator {
         }
 
         final int length = name.trim().length();
-        if (length > 255) {
+        if (length > MAX_NAME_LENGTH) {
             this.validationHandler().append(new Error("'name' must have between 3 and 255 characters"));
             return;
         }
 
-        if (length < 3) {
+        if (length < MIN_NAME_LENGTH) {
             this.validationHandler().append(new Error("'name' must have between 3 and 255 characters"));
         }
     }

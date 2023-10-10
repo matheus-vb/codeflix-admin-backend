@@ -3,7 +3,6 @@ package com.matheusvb.admin.catalogue.domain.category;
 import com.matheusvb.admin.catalogue.domain.exceptions.DomainException;
 import com.matheusvb.admin.catalogue.domain.validation.handler.ThrowsValidationHandler;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
 public class CategoryTest {
@@ -17,12 +16,12 @@ public class CategoryTest {
 
         Assertions.assertNotNull(actualCategory);
         Assertions.assertNotNull(actualCategory.getId());
-        Assertions.assertEquals(expectedName, actualCategory.getaName());
-        Assertions.assertEquals(expectedDescription, actualCategory.getaDescription());
+        Assertions.assertEquals(expectedName, actualCategory.getName());
+        Assertions.assertEquals(expectedDescription, actualCategory.getDescription());
         Assertions.assertEquals(expectedIsActive, actualCategory.isActive());
-        Assertions.assertNotNull(actualCategory.getaCreationDate());
-        Assertions.assertNotNull(actualCategory.getaUpdateDate());
-        Assertions.assertNull(actualCategory.getaDeletionDate());
+        Assertions.assertNotNull(actualCategory.getCreatedAt());
+        Assertions.assertNotNull(actualCategory.getUpdatedAt());
+        Assertions.assertNull(actualCategory.getDeletedAt());
     }
 
     @Test
@@ -115,12 +114,12 @@ public class CategoryTest {
 
         Assertions.assertNotNull(actualCategory);
         Assertions.assertNotNull(actualCategory.getId());
-        Assertions.assertEquals(expectedName, actualCategory.getaName());
-        Assertions.assertEquals(expectedDescription, actualCategory.getaDescription());
+        Assertions.assertEquals(expectedName, actualCategory.getName());
+        Assertions.assertEquals(expectedDescription, actualCategory.getDescription());
         Assertions.assertEquals(expectedIsActive, actualCategory.isActive());
-        Assertions.assertNotNull(actualCategory.getaCreationDate());
-        Assertions.assertNotNull(actualCategory.getaUpdateDate());
-        Assertions.assertNull(actualCategory.getaDeletionDate());
+        Assertions.assertNotNull(actualCategory.getCreatedAt());
+        Assertions.assertNotNull(actualCategory.getUpdatedAt());
+        Assertions.assertNull(actualCategory.getDeletedAt());
     }
 
     @Test
@@ -136,11 +135,31 @@ public class CategoryTest {
 
         Assertions.assertNotNull(actualCategory);
         Assertions.assertNotNull(actualCategory.getId());
-        Assertions.assertEquals(expectedName, actualCategory.getaName());
-        Assertions.assertEquals(expectedDescription, actualCategory.getaDescription());
+        Assertions.assertEquals(expectedName, actualCategory.getName());
+        Assertions.assertEquals(expectedDescription, actualCategory.getDescription());
         Assertions.assertEquals(expectedIsActive, actualCategory.isActive());
-        Assertions.assertNotNull(actualCategory.getaCreationDate());
-        Assertions.assertNotNull(actualCategory.getaUpdateDate());
-        Assertions.assertNotNull(actualCategory.getaDeletionDate());
+        Assertions.assertNotNull(actualCategory.getCreatedAt());
+        Assertions.assertNotNull(actualCategory.getUpdatedAt());
+        Assertions.assertNotNull(actualCategory.getDeletedAt());
+    }
+
+    @Test
+    public void givenAValidActiveCategory_whenCallDeactivate_thenReturnCategoryInactivated() {
+        final String expectedName = "Abc";
+        final var expectedDescription = "Uma categoria de filmes";
+        final var expectedIsActive = true;
+
+        final var cCategory = Category.newCategory(expectedName, expectedDescription, expectedIsActive);
+
+        Assertions.assertDoesNotThrow(() -> cCategory.validate(new ThrowsValidationHandler()));
+
+        final var updatedAt =  cCategory.getUpdatedAt();
+        Assertions.assertTrue(cCategory.isActive());
+        Assertions.assertNull(cCategory.getDeletedAt());
+
+        final var actualCategory = cCategory.deactivate();
+        Assertions.assertNotNull(actualCategory.getDeletedAt());
+        Assertions.assertFalse(actualCategory.isActive());
+        Assertions.assertTrue(actualCategory.getUpdatedAt().isAfter(updatedAt));
     }
 }

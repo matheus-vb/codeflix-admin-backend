@@ -4,34 +4,33 @@ import com.matheusvb.admin.catalogue.domain.AggregateRoot;
 import com.matheusvb.admin.catalogue.domain.validation.ValidationHandler;
 
 import java.time.Instant;
-import java.util.UUID;
 
 public class Category extends AggregateRoot<CategoryID> {
     final CategoryID anId;
-    private String aName;
-    private String aDescription;
-    private boolean isActive;
-    private Instant aCreationDate;
-    private Instant aUpdateDate;
-    private Instant aDeletionDate;
+    private String name;
+    private String description;
+    private boolean active;
+    private Instant createdAt;
+    private Instant updatedAt;
+    private Instant deletedAt;
 
     private Category(
             final CategoryID anId,
-            final String aName,
-            final String aDescription,
-            final boolean isActive,
-            final Instant aCreationDate,
-            final Instant aUpdateDate,
+            final String name,
+            final String description,
+            final boolean active,
+            final Instant createdAt,
+            final Instant updatedAt,
             final Instant aDeletionDate
     ) {
         super(anId);
         this.anId = anId;
-        this.aName = aName;
-        this.aDescription = aDescription;
-        this.isActive = isActive;
-        this.aCreationDate = aCreationDate;
-        this.aUpdateDate = aUpdateDate;
-        this.aDeletionDate = aDeletionDate;
+        this.name = name;
+        this.description = description;
+        this.active = active;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.deletedAt = aDeletionDate;
     }
 
     public static Category newCategory(final String aName, final String aDescription, final boolean isActive){
@@ -47,31 +46,41 @@ public class Category extends AggregateRoot<CategoryID> {
         new CategoryValidator(this, handler).validate();
     }
 
+    public Category deactivate() {
+        if (getDeletedAt() == null) {
+            this.deletedAt = Instant.now();
+        }
+
+        this.active = false;
+        this.updatedAt = Instant.now();
+        return this;
+    }
+
     public CategoryID getId() {
         return anId;
     }
 
-    public String getaName() {
-        return aName;
+    public String getName() {
+        return name;
     }
 
-    public String getaDescription() {
-        return aDescription;
+    public String getDescription() {
+        return description;
     }
 
     public boolean isActive() {
-        return isActive;
+        return active;
     }
 
-    public Instant getaCreationDate() {
-        return aCreationDate;
+    public Instant getCreatedAt() {
+        return createdAt;
     }
 
-    public Instant getaUpdateDate() {
-        return aUpdateDate;
+    public Instant getUpdatedAt() {
+        return updatedAt;
     }
 
-    public Instant getaDeletionDate() {
-        return aDeletionDate;
+    public Instant getDeletedAt() {
+        return deletedAt;
     }
 }
