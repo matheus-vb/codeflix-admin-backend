@@ -147,9 +147,9 @@ public class CategoryTest {
     public void givenAValidActiveCategory_whenCallDeactivate_thenReturnCategoryInactivated() {
         final String expectedName = "Abc";
         final var expectedDescription = "Uma categoria de filmes";
-        final var expectedIsActive = true;
+        final var expectedIsActive = false;
 
-        final var cCategory = Category.newCategory(expectedName, expectedDescription, expectedIsActive);
+        final var cCategory = Category.newCategory(expectedName, expectedDescription, true);
 
         Assertions.assertDoesNotThrow(() -> cCategory.validate(new ThrowsValidationHandler()));
 
@@ -159,7 +159,27 @@ public class CategoryTest {
 
         final var actualCategory = cCategory.deactivate();
         Assertions.assertNotNull(actualCategory.getDeletedAt());
-        Assertions.assertFalse(actualCategory.isActive());
+        Assertions.assertEquals(expectedIsActive, actualCategory.isActive());
+        Assertions.assertTrue(actualCategory.getUpdatedAt().isAfter(updatedAt));
+    }
+
+    @Test
+    public void givenAValidInactiveCategory_whenCallActivate_thenReturnCategoryActivated() {
+        final String expectedName = "Abc";
+        final var expectedDescription = "Uma categoria de filmes";
+        final var expectedIsActive = true;
+
+        final var cCategory = Category.newCategory(expectedName, expectedDescription, false);
+
+        Assertions.assertDoesNotThrow(() -> cCategory.validate(new ThrowsValidationHandler()));
+
+        final var updatedAt =  cCategory.getUpdatedAt();
+        Assertions.assertFalse(cCategory.isActive());
+        Assertions.assertNotNull(cCategory.getDeletedAt());
+
+        final var actualCategory = cCategory.activate();
+        Assertions.assertNull(actualCategory.getDeletedAt());
+        Assertions.assertEquals(expectedIsActive, actualCategory.isActive());
         Assertions.assertTrue(actualCategory.getUpdatedAt().isAfter(updatedAt));
     }
 }
