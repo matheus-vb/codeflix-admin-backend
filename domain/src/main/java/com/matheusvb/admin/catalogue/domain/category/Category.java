@@ -1,6 +1,7 @@
 package com.matheusvb.admin.catalogue.domain.category;
 
 import com.matheusvb.admin.catalogue.domain.AggregateRoot;
+import com.matheusvb.admin.catalogue.domain.validation.ValidationHandler;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -38,6 +39,11 @@ public class Category extends AggregateRoot<CategoryID> {
         final var now = Instant.now();
 
         return new Category(id, aName, aDescription, isActive, now, now, null);
+    }
+
+    @Override
+    public void validate(final ValidationHandler handler) {
+        new CategoryValidator(this, handler).validate();
     }
 
     public CategoryID getId() {
