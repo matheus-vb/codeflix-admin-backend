@@ -15,11 +15,11 @@ public class CategoryTest {
 
         Assertions.assertNotNull(actualCategory);
         Assertions.assertNotNull(actualCategory.getId());
-        Assertions.assertEquals(expectedName, actualCategory.getName());
-        Assertions.assertEquals(exptectedDescription, actualCategory.getDescription());
+        Assertions.assertEquals(expectedName, actualCategory.getaName());
+        Assertions.assertEquals(exptectedDescription, actualCategory.getaDescription());
         Assertions.assertEquals(exptectedIsActive, actualCategory.isActive());
-        Assertions.assertNotNull(actualCategory.getCreatedAt());
-        Assertions.assertNotNull(actualCategory.getUpdatedAt());
-        Assertions.assertNull(actualCategory.getDeletedAt());
+        Assertions.assertNotNull(actualCategory.getaCreationDate());
+        Assertions.assertNotNull(actualCategory.getaUpdateDate());
+        Assertions.assertNull(actualCategory.getaDeletionDate());
     }
 }
