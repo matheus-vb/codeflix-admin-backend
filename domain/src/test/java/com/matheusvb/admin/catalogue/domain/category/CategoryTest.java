@@ -254,7 +254,7 @@ public class CategoryTest {
         final var aCategory = Category.newCategory("Some name", "Wrong category", expectedIsActive);
 
         Assertions.assertDoesNotThrow(() -> aCategory.validate(new ThrowsValidationHandler()));
-        
+
         Assertions.assertTrue(aCategory.isActive());
         Assertions.assertNull(aCategory.getDeletedAt());
 
