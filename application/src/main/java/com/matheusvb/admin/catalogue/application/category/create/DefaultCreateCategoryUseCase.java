@@ -21,7 +21,7 @@ public class DefaultCreateCategoryUseCase extends CreateCategoryUseCase {
 
         final var category = Category.newCategory(name, description, active);
         category.validate(new ThrowsValidationHandler());
-        
+
         final var createdCategory = categoryGateway.create(category);
 
         return CreateCategoryOutput.from(createdCategory);
