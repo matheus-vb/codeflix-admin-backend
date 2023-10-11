@@ -1,7 +1,9 @@
 package com.matheusvb.admin.catalogue.application;
 
-public class Main {
-    public static void main(String[] args) {
-        System.out.println("Hello world!");
+import com.matheusvb.admin.catalogue.domain.category.Category;
+
+public class UseCase {
+    public Category execute() {
+        return new Category();
     }
 }
