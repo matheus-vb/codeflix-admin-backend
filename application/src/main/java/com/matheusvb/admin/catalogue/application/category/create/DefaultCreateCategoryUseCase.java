@@ -2,6 +2,7 @@ package com.matheusvb.admin.catalogue.application.category.create;
 
 import com.matheusvb.admin.catalogue.domain.category.Category;
 import com.matheusvb.admin.catalogue.domain.category.CategoryGateway;
+import com.matheusvb.admin.catalogue.domain.validation.handler.Notification;
 import com.matheusvb.admin.catalogue.domain.validation.handler.ThrowsValidationHandler;
 
 import java.util.Objects;
@@ -19,8 +20,13 @@ public class DefaultCreateCategoryUseCase extends CreateCategoryUseCase {
         String description = aCommand.description();
         boolean active = aCommand.isActive();
 
+        final var notification = Notification.create();
+
         final var category = Category.newCategory(name, description, active);
-        category.validate(new ThrowsValidationHandler());
+        category.validate(notification);
+
+        if (notification.hasError()) {
+        }
 
         final var createdCategory = categoryGateway.create(category);
 
