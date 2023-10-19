@@ -4,6 +4,7 @@ import com.matheusvb.admin.catalogue.domain.category.Category;
 import com.matheusvb.admin.catalogue.domain.category.CategoryGateway;
 import com.matheusvb.admin.catalogue.domain.validation.handler.Notification;
 import com.matheusvb.admin.catalogue.domain.validation.handler.ThrowsValidationHandler;
+import io.vavr.control.Either;
 
 import java.util.Objects;
 
@@ -15,7 +16,7 @@ public class DefaultCreateCategoryUseCase extends CreateCategoryUseCase {
     }
 
     @Override
-    public CreateCategoryOutput execute(final CreateCategoryCommand aCommand) {
+    public Either<Notification, CreateCategoryOutput> execute(final CreateCategoryCommand aCommand) {
         String name = aCommand.name();
         String description = aCommand.description();
         boolean active = aCommand.isActive();
