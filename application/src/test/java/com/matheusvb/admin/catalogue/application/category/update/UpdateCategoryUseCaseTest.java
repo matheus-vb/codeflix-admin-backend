@@ -59,7 +59,7 @@ public class UpdateCategoryUseCaseTest {
         Mockito.verify(categoryGateway, times(1)).findById(expectedId);
 
         Mockito.verify(categoryGateway, Mockito.times(1))
-                .create(Mockito.argThat(updatedCategory -> {
+                .update(Mockito.argThat(updatedCategory -> {
                             return Objects.equals(expectedName, updatedCategory.getName())
                                     && Objects.equals(expectedDescription, updatedCategory.getDescription())
                                     && Objects.equals(expectedIsActive, updatedCategory.isActive())
