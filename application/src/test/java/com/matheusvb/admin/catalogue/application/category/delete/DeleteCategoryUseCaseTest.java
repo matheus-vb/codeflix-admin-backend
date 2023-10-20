@@ -51,7 +51,7 @@ public class DeleteCategoryUseCaseTest {
         doNothing()
                 .when(categoryGateway).deleteById(CategoryID.from(expectedId));
 
-        Assertions.assertDoesNotThrow(() -> useCase.execute(expectedId.getValue()));
+        Assertions.assertDoesNotThrow(() -> useCase.execute(expectedId));
 
         Mockito.verify(categoryGateway, times(1)).deleteById(eq(CategoryID.from(expectedId)));
     }
