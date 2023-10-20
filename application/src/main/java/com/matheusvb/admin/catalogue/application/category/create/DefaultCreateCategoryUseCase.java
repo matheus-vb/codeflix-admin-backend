@@ -3,7 +3,7 @@ package com.matheusvb.admin.catalogue.application.category.create;
 import com.matheusvb.admin.catalogue.domain.category.Category;
 import com.matheusvb.admin.catalogue.domain.category.CategoryGateway;
 import com.matheusvb.admin.catalogue.domain.validation.handler.Notification;
-import com.matheusvb.admin.catalogue.domain.validation.handler.ThrowsValidationHandler;
+import io.vavr.API;
 import io.vavr.control.Either;
 
 import java.util.Objects;
@@ -26,11 +26,12 @@ public class DefaultCreateCategoryUseCase extends CreateCategoryUseCase {
         final var category = Category.newCategory(name, description, active);
         category.validate(notification);
 
-        if (notification.hasError()) {
-        }
+        return notification.hasError() ? API.Left(notification) : create(category);
+    }
 
-        final var createdCategory = categoryGateway.create(category);
-
-        return CreateCategoryOutput.from(createdCategory);
+    private Either<Notification, CreateCategoryOutput> create(final Category category) {
+        return API.Try(() -> this.categoryGateway.create(category))
+                .toEither()
+                .bimap(Notification::create, CreateCategoryOutput::from);
     }
 }
