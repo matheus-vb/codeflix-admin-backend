@@ -1,5 +1,6 @@
 package com.matheusvb.admin.catalogue.application.category.update;
 
+import com.matheusvb.admin.catalogue.application.category.create.CreateCategoryCommand;
 import com.matheusvb.admin.catalogue.application.category.create.DefaultCreateCategoryUseCase;
 import com.matheusvb.admin.catalogue.domain.category.Category;
 import com.matheusvb.admin.catalogue.domain.category.CategoryGateway;
@@ -67,6 +68,78 @@ public class UpdateCategoryUseCaseTest {
                                     && Objects.nonNull(updatedCategory.getCreatedAt())
                                     && Objects.nonNull(updatedCategory.getUpdatedAt())
                                     && Objects.isNull(updatedCategory.getDeletedAt())
+                                    && aCategory.getUpdatedAt().isBefore(updatedCategory.getUpdatedAt())
+                                    && updatedCategory.getCreatedAt().isBefore(updatedCategory.getUpdatedAt());
+                        }
+                ));
+    }
+
+    @Test
+    public void givenAnInvalidName_whenCallUpdateCategory_thenShouldReturnDomainException() {
+        final var aCategory = Category.newCategory("Name", null, true);
+        final var expectedId = aCategory.getId();
+
+        final String expectedName = null;
+        final var expectedDescription = "Some category";
+        final var expectedIsActive = true;
+        final var expectedErrorMessage = "'name' can not be null";
+        final var expectedErrorCount = 1;
+
+        final var aCommand = UpdateCategoryCommand.with(expectedId.getValue(), expectedName, expectedDescription, expectedIsActive);
+
+        when(categoryGateway.findById(eq(expectedId)))
+                .thenReturn(Optional.of(aCategory.clone()));
+
+        final var notification = useCase.execute(aCommand).getLeft();
+
+        Assertions.assertEquals(expectedErrorMessage, notification.firstError().message());
+        Assertions.assertEquals(expectedErrorCount, notification.getErrors().size());
+
+        Mockito.verify(categoryGateway, times(0)).update(any());
+    }
+
+    @Test
+    public void givenAValidCommandWithInactiveCategory_whenCallUpdateCategory_thenShouldReturnInactiveCategoryId() {
+        final var expectedName = "Movies";
+        final var expectedDescription = "A movie category";
+        final var expectedIsActive = false;
+
+        final var aCategory = Category.newCategory("Name", null, true);
+
+        final var expectedId = aCategory.getId();
+
+        final var aCommand = UpdateCategoryCommand.with(
+                expectedId.getValue(),
+                expectedName,
+                expectedDescription,
+                expectedIsActive
+        );
+
+        when(categoryGateway.findById(eq(expectedId)))
+                .thenReturn(Optional.of(aCategory.clone()));
+
+        when(categoryGateway.update(any()))
+                .thenAnswer(returnsFirstArg());
+
+        Assertions.assertTrue(aCategory.isActive());
+        Assertions.assertNull(aCategory.getDeletedAt());
+
+        final var actualOutput = useCase.execute(aCommand).get();
+
+        Assertions.assertNotNull(actualOutput);
+        Assertions.assertNotNull(actualOutput.id());
+
+        Mockito.verify(categoryGateway, times(1)).findById(expectedId);
+
+        Mockito.verify(categoryGateway, Mockito.times(1))
+                .update(Mockito.argThat(updatedCategory -> {
+                            return Objects.equals(expectedName, updatedCategory.getName())
+                                    && Objects.equals(expectedDescription, updatedCategory.getDescription())
+                                    && Objects.equals(expectedIsActive, updatedCategory.isActive())
+                                    && Objects.nonNull(updatedCategory.getId())
+                                    && Objects.nonNull(updatedCategory.getCreatedAt())
+                                    && Objects.nonNull(updatedCategory.getUpdatedAt())
+                                    && Objects.nonNull(updatedCategory.getDeletedAt())
                                     && aCategory.getUpdatedAt().isBefore(updatedCategory.getUpdatedAt())
                                     && updatedCategory.getCreatedAt().isBefore(updatedCategory.getUpdatedAt());
                         }
