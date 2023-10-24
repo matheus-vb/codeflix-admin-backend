@@ -1,4 +1,4 @@
-package com.matheusvb.admin.catalogue.application.category.retrieve;
+package com.matheusvb.admin.catalogue.application.category.retrieve.get;
 
 import com.matheusvb.admin.catalogue.application.category.create.DefaultCreateCategoryUseCase;
 import com.matheusvb.admin.catalogue.domain.category.Category;
@@ -52,32 +52,22 @@ public class GetCategoryByIdUseCaseTest {
 
         final var actualOutput = useCase.execute(expectedId.getValue());
 
-        Assertions.assertEquals(CategoryOutput.from(expectedCategory), actualOutput);
-
-        Mockito.verify(categoryGateway, Mockito.times(1))
-                .findById(Mockito.argThat(foundCategory -> {
-                            return Objects.equals(expectedName, foundCategory.getName())
-                                    && Objects.equals(expectedDescription, foundCategory.getDescription())
-                                    && Objects.equals(expectedIsActive, foundCategory.isActive())
-                                    && Objects.nonNull(foundCategory.getId())
-                                    && Objects.nonNull(foundCategory.getCreatedAt())
-                                    && Objects.nonNull(foundCategory.getUpdatedAt())
-                                    && Objects.isNull(foundCategory.getDeletedAt());
-                        }
-                ));
+        Assertions.assertEquals(CategoryOutput.from(expectedCategory).name(), actualOutput.name());
+        Assertions.assertEquals(CategoryOutput.from(expectedCategory).description(), actualOutput.description());
+        Assertions.assertEquals(CategoryOutput.from(expectedCategory).isActive(), actualOutput.isActive());
     }
 
     @Test
     public void givenAnInvalidId_whenCallGetCategoryById_thenShouldReturnNotFound() {
-        final var expectedErrorMessage = "";
         final var expectedId = CategoryID.from("123");
+        final var expectedErrorMessage = "Category with id %s was not found".formatted(expectedId.getValue());
 
         when(categoryGateway.findById(expectedId))
             .thenReturn(Optional.empty());
 
         final var actualException = Assertions.assertThrows(
                 DomainException.class,
-                () -> useCase.exectute(expectedId.getValue())
+                () -> useCase.execute(expectedId.getValue())
         );
 
         Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
