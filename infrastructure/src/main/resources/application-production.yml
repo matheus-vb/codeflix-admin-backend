@@ -1,0 +1,5 @@
+mysql:
+  username: ${MYSQL_DATABASE_USERNAME:root}
+  password: ${MYSQL_DATABASE_PASSWORD:123456}
+  schema: adm_videos
+  url: ${MYSQL_DATABASE_URL:localhost:3306}
