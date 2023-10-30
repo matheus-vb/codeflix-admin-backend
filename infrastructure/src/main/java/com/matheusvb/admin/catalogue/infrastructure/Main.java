@@ -9,7 +9,7 @@ import org.springframework.core.env.AbstractEnvironment;
 @SpringBootApplication
 public class Main {
     public static void main(String[] args) {
-        System.out.println("hello application");
+        System.out.println("Starting application...");
 
         System.setProperty(AbstractEnvironment.DEFAULT_PROFILES_PROPERTY_NAME, "development");
 
