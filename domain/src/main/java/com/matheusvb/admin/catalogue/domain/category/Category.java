@@ -4,6 +4,7 @@ import com.matheusvb.admin.catalogue.domain.AggregateRoot;
 import com.matheusvb.admin.catalogue.domain.validation.ValidationHandler;
 
 import java.time.Instant;
+import java.util.Objects;
 
 public class Category extends AggregateRoot<CategoryID> implements Cloneable{
     final CategoryID anId;
@@ -28,8 +29,8 @@ public class Category extends AggregateRoot<CategoryID> implements Cloneable{
         this.name = name;
         this.description = description;
         this.active = active;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.createdAt = Objects.requireNonNull(createdAt);
+        this.updatedAt = Objects.requireNonNull(updatedAt);
         this.deletedAt = aDeletionDate;
     }
 
