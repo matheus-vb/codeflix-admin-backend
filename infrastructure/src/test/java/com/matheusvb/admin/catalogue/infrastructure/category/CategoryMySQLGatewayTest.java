@@ -17,12 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Collection;
 
-@ActiveProfiles("test")
-@ComponentScan(includeFilters = {
-        @ComponentScan.Filter(type = FilterType.REGEX, pattern = ".*[MySQLGateway]")
-})
-@DataJpaTest
-@ExtendWith(CategoryMySQLGatewayTest.CleanUpExtension.class)
+@MySQLGatewayTest
 public class CategoryMySQLGatewayTest {
     @Autowired
     private CategoryMySQLGateway categoryGateway;
@@ -34,21 +29,5 @@ public class CategoryMySQLGatewayTest {
     public void testInjection() {
         Assertions.assertNotNull(categoryGateway);
         Assertions.assertNotNull(categoryRepository);
-    }
-
-    static class CleanUpExtension implements BeforeEachCallback {
-        @Override
-        public void beforeEach(final ExtensionContext context) throws Exception {
-            final var repositories = SpringExtension
-                    .getApplicationContext(context)
-                    .getBeansOfType(CrudRepository.class)
-                    .values();
-
-            cleanUp(repositories);
-        }
-
-        private void cleanUp(final Collection<CrudRepository> repositories) {
-            repositories.forEach(CrudRepository::deleteAll);
-        }
     }
 }
