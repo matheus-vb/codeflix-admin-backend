@@ -126,12 +126,12 @@ public class CategoryMySQLGatewayTest {
     }
 
     @Test
-    public void givenAPersistedCategoryAndValidCategory_whenCallFindById_thenShouldReturnCategory() {
+    public void givenAPersistedCategoryAndValidCategoryId_whenCallFindById_thenShouldReturnCategory() {
         final var expectedName = "Movies";
         final var expectedDescription = "A movie category";
         final var expectedIsActive = true;
 
-        final var category = Category.newCategory("Old movies", null, expectedIsActive);
+        final var category = Category.newCategory(expectedName, expectedDescription, expectedIsActive);
 
         Assertions.assertEquals(0, categoryRepository.count());
 
@@ -148,8 +148,19 @@ public class CategoryMySQLGatewayTest {
         Assertions.assertEquals(expectedDescription, actualCategory.getDescription());
         Assertions.assertEquals(expectedIsActive, actualCategory.isActive());
         Assertions.assertEquals(category.getCreatedAt(), actualCategory.getCreatedAt());
-        Assertions.assertTrue(category.getUpdatedAt().isBefore(actualCategory.getUpdatedAt()));
+        Assertions.assertEquals(category.getUpdatedAt(), actualCategory.getUpdatedAt());
         Assertions.assertEquals(category.getDeletedAt(), actualCategory.getDeletedAt());
         Assertions.assertNull(actualCategory.getDeletedAt());
+    }
+
+    @Test
+    public void givenANotPersistedCategoryAndValidCategoryId_whenCallFindById_thenShouldReturnEmpty() {
+        Assertions.assertEquals(0, categoryRepository.count());
+
+        final var actualCategory = categoryGateway.findById(CategoryID.from("not-stored-id"));
+
+        Assertions.assertEquals(0, categoryRepository.count());
+
+        Assertions.assertTrue(actualCategory.isEmpty());
     }
 }
