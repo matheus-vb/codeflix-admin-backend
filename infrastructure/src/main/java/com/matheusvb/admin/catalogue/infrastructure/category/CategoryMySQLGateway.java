@@ -49,10 +49,12 @@ public class CategoryMySQLGateway implements CategoryGateway {
 
         final var specifications = Optional.ofNullable(aQuery.terms())
                 .filter(str -> !str.isBlank())
-                .map(str ->
-                        SpecificationUtils
-                                .<CategoryJPAEntity>like("name", str)
-                                .or(like("description", str))
+                .map(str -> {
+                    final Specification<CategoryJPAEntity> nameLike = like("name", str);
+                    final Specification<CategoryJPAEntity> descriptionLike = like("description", str);
+
+                    return nameLike.or(descriptionLike);
+                    }
                 )
                 .orElse(null);
 
